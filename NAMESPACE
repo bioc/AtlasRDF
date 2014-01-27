@@ -1,0 +1,15 @@
+exportPattern("^[[:alpha:]]+")
+
+#querying functions
+export(getAllEnsemblGenesForExFactor, getSpeciesSpecificEnsemblGenesForExFactor, getExperimentsByDescription,
+        getGenesForExperimentID, getGenesForExperimentURI, getExperimentURIsForGeneId, getExperimentIdsForGeneURI,
+        getLabel, getPathwaysFromGenesAndCondition, drawHeatMapForAtlasExperiment, getOntologyMappings,
+        getGeneListFromPubmedid, getGenesForPathwayURI, getPathwayForGeneId, getRankedPathwaysForGeneIds, 
+        searchForEFOTerms)
+
+#enrichment functions
+export(getGeneUriFromName, getExFactorURIFromLabel, searchForEFOTerms, getGeneUriFromEnsemblId, 
+        getPathwayUriFromName, doFishersEnrichment, doFishersEnrichmentForGeneNames, doFishersEnrichmentForEnsemblIds,
+        vizPvalues, excludeSubclasses, includeOnlySubclasses, getTaxonURI, orderEnrichmentResults)
+
+exportClasses(generef, pathwayresult, factorbackground, enrichmentresult)
