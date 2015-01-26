@@ -6,6 +6,34 @@
 #functions to perform querying of Atlas data
 ###################
 
+#######
+#function to return all conditions a given gene is reportedly differentially expressed in
+#######
+getConditionsForGeneName <- function(genename, limit=0, endpoint="http://wwwdev.ebi.ac.uk/rdf/services/atlas/sparql"){
+    
+    limitC = ""
+    if (limit != 0)
+    if (is.numeric(limit) && ! is.null( grep ("/.",limit)))
+    limitC = paste( " limit " , limit)             
+    else
+    warning ("limit should be an integer, limit omitted from the query")
+    
+    query <- paste( "PREFIX atlas_r: <http://atlasrdfrpackage> \n",
+            "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n",
+            "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> \n",
+            "PREFIX efo:<http://www.ebi.ac.uk/efo/> \n",
+            "PREFIX obo:<http://purl.obolibrary.org/obo/> \n",
+            "PREFIX owl: <http://www.w3.org/2002/07/owl#> \n",
+            "PREFIX atlas: <http://rdf.ebi.ac.uk/resource/atlas/> \n",
+            "PREFIX atlasterms: <http://rdf.ebi.ac.uk/terms/atlas/> \n",
+            
+            
+            limitC )
+    message(query)
+
+
+}
+
 
 #######
 #get all ensembl genes for an efo term for any species
@@ -1238,61 +1266,56 @@ doFishersEnrichment <- function(genelist, genelist_bg, genecounts){
     #calc counts for given gene list
     genelistfactors <- calculateCountsForGeneLists(genelist, genelist_bg, genecounts)
     
-    
-    #specify class to store enrichemt results 
-    enrichmentresult <- setClass("enrichmentresult",           
-            representation( factoruri="character", 
-                    label="character", 
-                    p.value="numeric", 
-                    estimate="numeric",    
-                    alternative="character", 
-                    null.value="numeric", 
-                    method="character",
-                    enrichedgenes="vector"))
-    
     fisherresults <- list()
     
-    #do test for each factor
-    genes <- keys(genelistfactors)
-    for (i in 1:length(genes)){
+    if(length(keys(genelistfactors)) == 0){
+        message("No counts found for this gene list")
         
-        genelistobject <- genelistfactors[[genes[i]]]
-        bggeneobject <- genecounts[[genes[i]]]
+        }
+    else{
+    
+        #do test for each factor
+        genes <- keys(genelistfactors)
+        for (i in 1:length(genes)){
         
-        if(!is.null(genelistobject) && !is.null(bggeneobject)){
+            genelistobject <- genelistfactors[[genes[i]]]
+            bggeneobject <- genecounts[[genes[i]]]
+        
+            if(!is.null(genelistobject) && !is.null(bggeneobject)){
             
-            #gather stats for fisher test
-            genelistannotated <- genelistobject$numgenesexpressed
-            genelistnotannotated <- genelistobject$numgenesnotexpressed
-            bgannotated <- bggeneobject$numgenesexpressed
-            bgnotannotated <- bggeneobject$numgenesnotexpressed
+                #gather stats for fisher test
+                genelistannotated <- genelistobject$numgenesexpressed
+                genelistnotannotated <- genelistobject$numgenesnotexpressed
+                bgannotated <- bggeneobject$numgenesexpressed
+                bgnotannotated <- bggeneobject$numgenesnotexpressed
             
-            input <- matrix(c(genelistannotated, genelistnotannotated, bgannotated, bgnotannotated), nrow = 2, dimnames =
+                input <- matrix(c(genelistannotated, genelistnotannotated, bgannotated, bgnotannotated), nrow = 2, dimnames =
                     list(c("Annotated", "Not Annotated"),
                             c("Genelist", "Backgound")))
             
-            #do fisher's exact test
-            result <- fisher.test(input)
+                #do fisher's exact test
+                result <- fisher.test(input)
             
-            #store results
-            enrichresult <- new("enrichmentresult")
+                #store results
+                enrichresult <- new("enrichmentresult")
             
-            enrichresult@label <- bggeneobject$label
-            enrichresult@factoruri <- genelistobject$uri
-            enrichresult@enrichedgenes <- genelistobject$geneuris
-            enrichresult@p.value <- result$p.value            
-            enrichresult@estimate <- result$estimate
-            enrichresult@alternative <- result$alternative
-            enrichresult@null.value <- result$null.value
-            enrichresult@method <- result$method
+                enrichresult@label <- bggeneobject$label
+                enrichresult@factoruri <- genelistobject$uri
+                enrichresult@enrichedgenes <- genelistobject$geneuris
+                enrichresult@p.value <- result$p.value            
+                enrichresult@estimate <- result$estimate
+                enrichresult@alternative <- result$alternative
+                enrichresult@null.value <- result$null.value
+                enrichresult@method <- result$method
             
-            fisherresults <- c(fisherresults, enrichresult)                        
+                fisherresults <- c(fisherresults, enrichresult)                        
+            
+            }
             
         }
-        
+        message("enrichment complete")
+        return(fisherresults)
     }
-    message("enrichment complete")
-    return(fisherresults)
     
 }
 

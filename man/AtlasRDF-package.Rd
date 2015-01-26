@@ -29,8 +29,8 @@
     \tabular{ll}{
         Package: \tab AtlasRDF\cr
         Type: \tab Package\cr
-        Version: \tab 1.0\cr
-        Date: \tab 2013-09-09\cr
+        Version: \tab 1.3\cr
+        Date: \tab 2015-01-26\cr
         License: \tab Apache 2.0\cr
     }
     
