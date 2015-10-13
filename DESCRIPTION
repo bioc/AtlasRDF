@@ -1,7 +1,7 @@
 Package: AtlasRDF
 Type: Package
 Title: Gene Expression Atlas query and gene set enrichment package.
-Version: 1.6.0
+Version: 1.7.0
 Date: 2015-01-26
 Author: James Malone, Simon Jupp, Maryam Soleimani
 Maintainer: James Malone <malone@ebi.ac.uk>
