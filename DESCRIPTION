@@ -10,3 +10,4 @@ Description: Query the Gene Expression Atlas RDF data at the European Bioinforma
 Note: use the R SPARQL package available at http://cran.r-project.org/web/packages/SPARQL/
 License: Apache License 2.0
 biocViews: Microarray, DataImport, GeneSetEnrichment, GeneExpression, DifferentialExpression, DataRepresentation
+PackageStatus: Deprecated
